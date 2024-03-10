@@ -1,6 +1,6 @@
 #include "LZW_coder.h"
 
-// генерация файла на основе алфавита
+// РіРµРЅРµСЂР°С†РёСЏ С„Р°Р№Р»Р° РЅР° РѕСЃРЅРѕРІРµ Р°Р»С„Р°РІРёС‚Р°
 void generateFile(const std::vector<std::string>& init_dict, const std::string& file_name) {
 	std::ofstream file;
 	file.open(file_name);
@@ -13,7 +13,7 @@ void generateFile(const std::vector<std::string>& init_dict, const std::string& 
 }
 
 
-// кодирование LZW
+// РєРѕРґРёСЂРѕРІР°РЅРёРµ LZW
 void LZW_encoder(const std::vector<std::string>& init_dict, const std::string& fin_name, const std::string& fout_name) {
 	std::ifstream fin;
 	std::ofstream fout;
@@ -25,32 +25,32 @@ void LZW_encoder(const std::vector<std::string>& init_dict, const std::string& f
 	
 	char symbol;
 	std::string str = "";
-	// посимвольное считывание файла
+	// РїРѕСЃРёРјРІРѕР»СЊРЅРѕРµ СЃС‡РёС‚С‹РІР°РЅРёРµ С„Р°Р№Р»Р°
 	while (fin >> std::noskipws >> symbol) {
 		str += symbol;
 		
-		// поиск строки в словаре
+		// РїРѕРёСЃРє СЃС‚СЂРѕРєРё РІ СЃР»РѕРІР°СЂРµ
 		if (std::find(dictionary.begin(), dictionary.end(), str) == dictionary.end()) {
 			// not found
 			char eChar = str[str.size() - 1];
 			str.pop_back();
 
-			// отправка в поток
+			// РѕС‚РїСЂР°РІРєР° РІ РїРѕС‚РѕРє
 			std::vector<bool> tmp_code = binaryRepresentation(getIndex(dictionary, str), dictionary.size());
 			for (int i = 0; i < tmp_code.size(); i++) {
 				fout << tmp_code[i];
 			}
 
-			// добавление строки в словарь
+			// РґРѕР±Р°РІР»РµРЅРёРµ СЃС‚СЂРѕРєРё РІ СЃР»РѕРІР°СЂСЊ
 			str.push_back(eChar);
 			dictionary.push_back(str);
 			
-			// следующая строка начинается с последнего символа новой для словаря строки
+			// СЃР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂРѕРєР° РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ РїРѕСЃР»РµРґРЅРµРіРѕ СЃРёРјРІРѕР»Р° РЅРѕРІРѕР№ РґР»СЏ СЃР»РѕРІР°СЂСЏ СЃС‚СЂРѕРєРё
 			str = eChar;
 		}
 	}
 	
-	// отправка в поток последнего символа
+	// РѕС‚РїСЂР°РІРєР° РІ РїРѕС‚РѕРє РїРѕСЃР»РµРґРЅРµРіРѕ СЃРёРјРІРѕР»Р°
 	std::vector<bool> tmp_code = binaryRepresentation(getIndex(dictionary, str), dictionary.size());
 	for (int i = 0; i < tmp_code.size(); i++) {
 		fout << tmp_code[i];
@@ -60,7 +60,7 @@ void LZW_encoder(const std::vector<std::string>& init_dict, const std::string& f
 	fout.close();
 }
 
-// декодирование LZW
+// РґРµРєРѕРґРёСЂРѕРІР°РЅРёРµ LZW
 void LZW_decoder(const std::vector<std::string>& init_dict, const std::string& fin_name, const std::string& fout_name) {
 	std::ifstream fin;
 	std::ofstream fout;
@@ -75,7 +75,7 @@ void LZW_decoder(const std::vector<std::string>& init_dict, const std::string& f
 	char buff[50];
 	while (!fin.eof()) {
 		flag = 1;
-		// считываем x бит из файла
+		// СЃС‡РёС‚С‹РІР°РµРј x Р±РёС‚ РёР· С„Р°Р№Р»Р°
 		if (dictionary.size() == 2 and first_sym) {
 			fin.get(buff, 2);
 			first_sym = 0;
@@ -88,39 +88,39 @@ void LZW_decoder(const std::vector<std::string>& init_dict, const std::string& f
 		if (binary_string == "") break;
 		std::string tmp; 
 
-		// если строки ещё нет в словаре, то дополняем её самостоятельно (ссылка на объяснение)
+		// РµСЃР»Рё СЃС‚СЂРѕРєРё РµС‰С‘ РЅРµС‚ РІ СЃР»РѕРІР°СЂРµ, С‚Рѕ РґРѕРїРѕР»РЅСЏРµРј РµС‘ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ (СЃСЃС‹Р»РєР° РЅР° РѕР±СЉСЏСЃРЅРµРЅРёРµ)
 		// http://vmath.ru/vf5/codes/lzw#dekodirovanie:~:text=%D0%9F-,%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80,-.%20%D0%97%D0%B0%D0%BA%D0%BE%D0%B4%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%B8
 		if (getNumFromBinStr(binary_string) == dictionary.size())
 			tmp = str + str[0];
 		else
 			tmp = dictionary[getNumFromBinStr(binary_string)];
 
-		// проход по всем символам считанной строки
+		// РїСЂРѕС…РѕРґ РїРѕ РІСЃРµРј СЃРёРјРІРѕР»Р°Рј СЃС‡РёС‚Р°РЅРЅРѕР№ СЃС‚СЂРѕРєРё
 		for (int i = 0; i < tmp.size(); i++) {
 			str += tmp[i];
-			// поиск строки в словаре
+			// РїРѕРёСЃРє СЃС‚СЂРѕРєРё РІ СЃР»РѕРІР°СЂРµ
 			if (std::find(dictionary.begin(), dictionary.end(), str) == dictionary.end() and flag) {
 				// not found
 
 				char eChar = str[str.size() - 1];
 				str.pop_back();
 
-				// отправка в поток
+				// РѕС‚РїСЂР°РІРєР° РІ РїРѕС‚РѕРє
 				fout << str;
 
-				// добавление строки в словарь
+				// РґРѕР±Р°РІР»РµРЅРёРµ СЃС‚СЂРѕРєРё РІ СЃР»РѕРІР°СЂСЊ
 				str.push_back(eChar);
 				dictionary.push_back(str);
 
-				// следующая строка начинается с невошедших символов tmp
-				str = tmp.substr(i, tmp.size() - i); //tmp.size() - i символов начиная с i-го 
+				// СЃР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂРѕРєР° РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ РЅРµРІРѕС€РµРґС€РёС… СЃРёРјРІРѕР»РѕРІ tmp
+				str = tmp.substr(i, tmp.size() - i); //tmp.size() - i СЃРёРјРІРѕР»РѕРІ РЅР°С‡РёРЅР°СЏ СЃ i-РіРѕ 
 				flag = false;
 			}
 			if (!flag) break;
 		}
 	}
 	
-	// отправка в поток последнего символа
+	// РѕС‚РїСЂР°РІРєР° РІ РїРѕС‚РѕРє РїРѕСЃР»РµРґРЅРµРіРѕ СЃРёРјРІРѕР»Р°
 	fout << str;
 
 	fin.close();
@@ -130,7 +130,7 @@ void LZW_decoder(const std::vector<std::string>& init_dict, const std::string& f
 
 /////////////////////////////////////////////
 
-// индекс элемента в векторе
+// РёРЅРґРµРєСЃ СЌР»РµРјРµРЅС‚Р° РІ РІРµРєС‚РѕСЂРµ
 int getIndex(const std::vector<std::string>& dictionary, const std::string& str) {
 	auto it = std::find(dictionary.begin(), dictionary.end(), str);
 	if (it != dictionary.end()) {
@@ -138,11 +138,11 @@ int getIndex(const std::vector<std::string>& dictionary, const std::string& str)
 		return ind;
 	}
 	else {
-		std::cout << "Элемент " << str << " не найден в векторе." << std::endl;
+		std::cout << "ГќГ«ГҐГ¬ГҐГ­ГІ " << str << " Г­ГҐ Г­Г Г©Г¤ГҐГ­ Гў ГўГҐГЄГІГ®Г°ГҐ." << std::endl;
 	}
 }
 
-// число в 10-чной СС, полученное из его двоичного представления 
+// С‡РёСЃР»Рѕ РІ 10-С‡РЅРѕР№ РЎРЎ, РїРѕР»СѓС‡РµРЅРЅРѕРµ РёР· РµРіРѕ РґРІРѕРёС‡РЅРѕРіРѕ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ 
 int getNumFromBinStr(std::string binary_string) {
 	std::reverse(binary_string.begin(), binary_string.end());
 	int decimal_number = 0;
@@ -156,7 +156,7 @@ int getNumFromBinStr(std::string binary_string) {
 	return decimal_number;
 }
 
-// Ищет и возвращает ближайшую к x сверху степень двойки
+// РС‰РµС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ Р±Р»РёР¶Р°Р№С€СѓСЋ Рє x СЃРІРµСЂС…Сѓ СЃС‚РµРїРµРЅСЊ РґРІРѕР№РєРё
 int nearestPower2(int x) {
 	int result = 0;
 	int i = 1;
@@ -167,7 +167,7 @@ int nearestPower2(int x) {
 	return result;
 }
 
-// бинарное представление числа с разрядностью x, где 2^x >= dict_size
+// Р±РёРЅР°СЂРЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С‡РёСЃР»Р° СЃ СЂР°Р·СЂСЏРґРЅРѕСЃС‚СЊСЋ x, РіРґРµ 2^x >= dict_size
 std::vector<bool> binaryRepresentation(int num, int dict_size) {
 	std::vector<bool> code(nearestPower2(dict_size));
 	int i = 0;
