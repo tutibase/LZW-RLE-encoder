@@ -12,7 +12,7 @@ void RLE_encoder(const std::vector<std::string>& init_dict, const std::string& f
 	char next;
 	int count = 1;
 	fin >> std::noskipws >> prev;
-	// ïîñèìâîëüíîå ñ÷èòûâàíèå ôàéëà
+	// Ð¿Ð¾ÑÐ¸Ð¼Ð²Ð¾Ð»ÑŒÐ½Ð¾Ðµ ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°Ð½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð°
 	while (fin >> std::noskipws >> next) {
 		if (next == prev) {
 			count++;
@@ -145,7 +145,7 @@ int numberOfCharacters(const std::string& file_name) {
 
 	char symbol;
 	int result = 0;
-	// ïîñèìâîëüíîå ñ÷èòûâàíèå ôàéëà
+	// Ð¿Ð¾ÑÐ¸Ð¼Ð²Ð¾Ð»ÑŒÐ½Ð¾Ðµ ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°Ð½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð°
 	while (fin >> std::noskipws >> symbol) {
 		result++;
 	}
